@@ -31,6 +31,21 @@ def view_post(post_id):
   return render_template("post.html.j2", post=post)
 
 
+@pages_blueprint.route("/post/delete/<int:post_id>")
+@login_required
+def delete_post(post_id):
+  post = PostModel.get(post_id)
+  user = current_user.get_id()
+  posts = PostModel.get_all()
+  if post.author_id == user:
+    post.delete()
+    flash(f"Post with title: {post.title} is deleted!", "success")
+    return redirect(url_for("pages.index"))
+  else:
+    print("You are not authorized to delete this content!")
+  return render_template("index.html.j2", posts=posts), 403
+
+
 VALID_TAGS = [
     'div', 'br', 'p', 'h1', 'h2', 'img', 'h3', 'ul', 'li', 'em', 'strong', 'a',
     'blockquote'

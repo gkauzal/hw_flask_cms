@@ -68,3 +68,8 @@ main {
 #createPost {
   margin-top: 20px;
 }
+
+.btn,
+btn-error {
+  float: right;
+}

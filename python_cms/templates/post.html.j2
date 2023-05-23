@@ -2,11 +2,15 @@
 {% block title %} {{ post.title }} {% endblock %}
 
 {% block content %}
-  {% if post.id is not defined %}
-    <h1>Post not found</h1>
-  {% else %}
-  <h1>{{ post.title }}</h1>
+{% if post.id is not defined %}
+<h1>Post not found</h1>
+{% else %}
+
+<form action="/post/delete/{{post.id}}" class="form-group" enctype="multipart/form-data">
+  <h1>{{ post.title }} <button class="btn btn-error tooltip" data-tooltip="permanently delete this post">Delete</button>
+  </h1>
   <img src="/files/{{post.teaser_image}}" class="img-responsive article-image-inner" alt="">
   {{ post.body|safe }}
-  {% endif %}
+</form>
+{% endif %}
 {% endblock %}
