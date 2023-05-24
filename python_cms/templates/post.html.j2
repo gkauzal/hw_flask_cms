@@ -8,10 +8,10 @@
 
 <form class="form-group" enctype="multipart/form-data">
   <h1>{{ post.title }}
-    <input type="button" value="Delete" class=" btn btn-error tooltip" data-tooltip="permanently delete this post"
-      onclick="window.location.href='https://flaskcms.com:5000/post/delete/{{ post.id }}';">
-    <input type="button" value="Edit" class=" btn btn-primary tooltip" data-tooltip="edit this post"
-      onclick="window.location.href='https://flaskcms.com:5000/post/edit/{{ post.id }}';">
+    <a class=" btn btn-error tooltip" data-tooltip="permanently delete this post"
+      href='https://flaskcms.com:5000/post/delete/{{ post.id }}' ;">Delete</a>
+    <a class=" btn btn-primary tooltip" data-tooltip="edit this post"
+      href='https://flaskcms.com:5000/post/edit/{{ post.id }}' ;">Edit</a>
   </h1>
   {% if post.teaser_image ==""%}
   <img src="{{ url_for('static', filename='default.jpg') }}" class="img-responsive article-image" alt="">

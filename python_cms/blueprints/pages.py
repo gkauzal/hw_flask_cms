@@ -57,7 +57,7 @@ def edit_post(post_id):
       form = PostForm()
       form.title.data = post.title
       form.teaser_image.data = post.teaser_image
-      form.body.data = sanitize_html(post.body)
+      form.body.data = post.body.decode('utf-8')
       return render_template(
           "edit_post.html.j2",
           form=form,
@@ -78,9 +78,7 @@ def edit_post(post_id):
       post.teaser_image = filename
     else:
       post.teaser_image = request.form.get("original_teaser_image", "")
-    body = request.form["body"]
-    clean_body = sanitize_html(body)
-    post.body = clean_body
+    post.body = request.form["body"].encode('utf-8')
     post.save()
     return render_template("index.html.j2", posts=posts)
 
