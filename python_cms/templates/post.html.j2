@@ -9,7 +9,11 @@
 <form action="/post/delete/{{post.id}}" class="form-group" enctype="multipart/form-data">
   <h1>{{ post.title }} <button class="btn btn-error tooltip" data-tooltip="permanently delete this post">Delete</button>
   </h1>
-  <img src="/files/{{post.teaser_image}}" class="img-responsive article-image-inner" alt="">
+  {% if post.teaser_image ==""%}
+  <img src="{{ url_for('static', filename='default.jpg') }}" class="img-responsive article-image" alt="">
+  {% else %}
+  <img src="/files/{{post.teaser_image}}" class="img-responsive article-image" alt="">
+  {% endif %}
   {{ post.body|safe }}
 </form>
 {% endif %}

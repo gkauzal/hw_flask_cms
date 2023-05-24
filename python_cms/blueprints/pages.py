@@ -77,9 +77,11 @@ def create_post():
     user = current_user.get_id()
 
     file = request.files["teaser_image"]
-    # print(file)
-    filename = secure_filename(file.filename)
-    file.save(path.join(python_cms.ROOT_PATH, 'files_upload', filename))
+    if file:
+      filename = secure_filename(file.filename)
+      file.save(path.join(python_cms.ROOT_PATH, 'files_upload', filename))
+    else:
+      filename = ""
 
     post = PostModel(title=title,
                      body=clean_body,
