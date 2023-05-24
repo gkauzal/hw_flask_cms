@@ -6,8 +6,12 @@
 <h1>Post not found</h1>
 {% else %}
 
-<form action="/post/delete/{{post.id}}" class="form-group" enctype="multipart/form-data">
-  <h1>{{ post.title }} <button class="btn btn-error tooltip" data-tooltip="permanently delete this post">Delete</button>
+<form class="form-group" enctype="multipart/form-data">
+  <h1>{{ post.title }}
+    <input type="button" value="Delete" class=" btn btn-error tooltip" data-tooltip="permanently delete this post"
+      onclick="window.location.href='https://flaskcms.com:5000/post/delete/{{ post.id }}';">
+    <input type="button" value="Edit" class=" btn btn-primary tooltip" data-tooltip="edit this post"
+      onclick="window.location.href='https://flaskcms.com:5000/post/edit/{{ post.id }}';">
   </h1>
   {% if post.teaser_image ==""%}
   <img src="{{ url_for('static', filename='default.jpg') }}" class="img-responsive article-image" alt="">

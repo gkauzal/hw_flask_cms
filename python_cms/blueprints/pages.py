@@ -46,8 +46,48 @@ def delete_post(post_id):
   return render_template("index.html.j2", posts=posts), 403
 
 
+@login_required
+@pages_blueprint.route("/post/edit/<string:post_id>", methods=['GET', 'POST'])
+def edit_post(post_id):
+  if request.method == "GET":
+    post = PostModel.get(post_id)
+    user = current_user.get_id()
+    posts = PostModel.get_all()
+    if post.author_id == user:
+      form = PostForm()
+      form.title.data = post.title
+      form.teaser_image.data = post.teaser_image
+      form.body.data = sanitize_html(post.body)
+      return render_template(
+          "edit_post.html.j2",
+          form=form,
+          post_id=post_id,
+      )
+    else:
+      print("You are not authorized to delete this content!")
+    return render_template("index.html.j2", posts=posts), 403
+  elif request.method == "POST":
+    posts = PostModel.get_all()
+    post = PostModel.get(post_id)
+    form = PostForm()
+    post.title = request.form["title"]
+    image = request.form.get("original_teaser_image", "")
+    if image == "":
+      file = request.files["teaser_image"]
+      filename = secure_filename(file.filename)
+      post.teaser_image = filename
+    else:
+      post.teaser_image = request.form.get("original_teaser_image", "")
+    body = request.form["body"]
+    clean_body = sanitize_html(body)
+    post.body = clean_body
+    post.save()
+    return render_template("index.html.j2", posts=posts)
+
+
 VALID_TAGS = [
     'div', 'br', 'p', 'h1', 'h2', 'img', 'h3', 'ul', 'li', 'em', 'strong', 'a',
+    'b'
     'blockquote'
 ]
 
@@ -110,4 +150,7 @@ def upload():
   directory = path.join(python_cms.ROOT_PATH, 'files_upload')
   f.save(path.join(directory, f.filename))
   url = url_for('pages.files', filename=f.filename)
-  return upload_success(url, filename=f.filename)  # return upload_success call
+  return upload_success(
+      url,
+      filename=f.filename,
+  )  # return upload_success call

@@ -72,4 +72,19 @@ main {
 .btn,
 btn-error {
   float: right;
+  margin-left: 10px;
+}
+
+.image-container {
+  position: relative;
+}
+
+.btn-delete-img {
+  position: absolute;
+  left: 10px;
+  bottom: 15px;
+}
+
+.hidden {
+  display: none;
 }
