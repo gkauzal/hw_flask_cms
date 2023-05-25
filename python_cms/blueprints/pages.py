@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 
 from python_cms.forms.post_form import PostForm
 from python_cms.models.post import PostModel
+from python_cms.models.category import CategoryModel
 
 pages_blueprint = Blueprint('pages', __name__)
 
@@ -16,6 +17,9 @@ pages_blueprint = Blueprint('pages', __name__)
 @pages_blueprint.route("/")
 def index():
   posts = PostModel.get_all()
+  for post in posts:
+    category = CategoryModel.get(post.category_id)
+    post.category = category.name
   return render_template("index.html.j2", posts=posts)
 
 
@@ -46,8 +50,8 @@ def delete_post(post_id):
   return render_template("index.html.j2", posts=posts), 403
 
 
-@login_required
 @pages_blueprint.route("/post/edit/<string:post_id>", methods=['GET', 'POST'])
+@login_required
 def edit_post(post_id):
   if request.method == "GET":
     post = PostModel.get(post_id)
@@ -55,6 +59,14 @@ def edit_post(post_id):
     posts = PostModel.get_all()
     if post.author_id == user:
       form = PostForm()
+      form.category.choices = [
+          (1, 'Sports'),
+          (2, 'Travel'),
+          (3, 'Music'),
+          (4, 'Food'),
+      ]
+      form.category.default = post.category_id
+      form.process()
       form.title.data = post.title
       form.teaser_image.data = post.teaser_image
       form.body.data = post.body.decode('utf-8')
@@ -81,8 +93,10 @@ def edit_post(post_id):
       post.teaser_image = request.form.get("original_teaser_image", "")
     post.body = request.form["body"].encode('utf-8')
     post.promoted = form.promoted.data
+    post.category_id = request.form["category"]
     post.save()
-    return render_template("index.html.j2", posts=posts)
+    flash(f"Post with title: {post.title} edited successfully", "success")
+    return redirect(url_for("pages.index"))
 
 
 VALID_TAGS = [
@@ -107,14 +121,19 @@ def sanitize_html(value):
 @login_required
 def create_post():
   form = PostForm()
+  form.category.choices = [
+      (1, 'Sports'),
+      (2, 'Travel'),
+      (3, 'Music'),
+      (4, 'Food'),
+  ]
   if request.method == "POST" and form.validate_on_submit():
     # print(json.dumps(request.form, indent=2))
     body = request.form["body"]
-
     clean_body = sanitize_html(body)
-
     title = request.form["title"]
     user = current_user.get_id()
+    category_id = request.form["category"]
     if form.promoted.data:
       promoted = bool(form.promoted.data)
     else:
@@ -127,11 +146,14 @@ def create_post():
     else:
       filename = ""
 
-    post = PostModel(title=title,
-                     body=clean_body,
-                     user_id=user,
-                     teaser_image=filename,
-                     promoted=promoted)
+    post = PostModel(
+        title=title,
+        body=clean_body,
+        user_id=user,
+        teaser_image=filename,
+        promoted=promoted,
+        category_id=category_id,
+    )
     post.save()
     flash(f"Post with title: {title} created successfully", "success")
     return redirect(url_for("pages.create_post"))

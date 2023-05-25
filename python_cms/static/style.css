@@ -93,3 +93,8 @@ btn-error {
   border-color: red;
   border-width: 3px;
 }
+
+.card-title.category {
+  color: grey;
+  margin-left: 15px;
+}

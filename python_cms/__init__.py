@@ -8,6 +8,7 @@ from python_cms.db import db
 
 from python_cms.models.user import UserModel
 from python_cms.models.post import PostModel
+from python_cms.models.category import CategoryModel
 
 app = Flask(__name__)
 
@@ -18,6 +19,7 @@ app.register_blueprint(auth_blueprint)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///data.db"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 db.init_app(app)
 
 app.jinja_env.auto_reload = True
