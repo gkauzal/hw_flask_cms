@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField
-from wtforms.validators import Length, InputRequired
+from wtforms import StringField, TextAreaField, SubmitField, BooleanField
+from wtforms.validators import Length, InputRequired, DataRequired
 from flask_wtf.file import FileField, FileAllowed
 from flask_ckeditor import CKEditorField
 
@@ -33,4 +33,5 @@ class PostForm(FlaskForm):
                  max=4000,
                  message="Body must be between 50 and 4000 characters long.")
       ])
+  promoted = BooleanField("Promoted", false_values=(False, 'false', 0))
   submit = SubmitField(label="Create")

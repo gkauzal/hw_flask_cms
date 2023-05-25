@@ -88,3 +88,8 @@ btn-error {
 .hidden {
   display: none;
 }
+
+.card.article-card.promoted {
+  border-color: red;
+  border-width: 3px;
+}

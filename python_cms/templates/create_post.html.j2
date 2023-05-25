@@ -33,6 +33,12 @@
   {{ form.body(class="form-input", placeholder="your article goes here", id='body') }}
   {{ form.submit(class="btn btn-primary input-group-btn float-right", id="createPost") }}
   {{ ckeditor.config(name='body') }}
+  <div class="form-group">
+    <label class="form-switch">
+      {{ form.promoted() }}
+      <i class="form-icon"></i> Promote on main page
+    </label>
+  </div>
 </form>
 {% endblock %}
 

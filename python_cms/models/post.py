@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, ForeignKey
+from sqlalchemy import String, Integer, ForeignKey, Boolean
 from sqlalchemy.orm import mapped_column, relationship
 from python_cms.db import BaseModel, db
 
@@ -9,14 +9,16 @@ class PostModel(BaseModel):
   teaser_image = mapped_column(String(80), nullable=False)
   body = mapped_column(String(8000), nullable=False)
   author_id = mapped_column(String(80), ForeignKey("users.id"), nullable=False)
+  promoted = mapped_column(Boolean(), nullable=False)
 
   author = relationship("UserModel", back_populates="posts")
 
-  def __init__(self, title, body, user_id, teaser_image):
+  def __init__(self, title, body, user_id, teaser_image, promoted):
     self.title = title
     self.body = body
     self.author_id = user_id
     self.teaser_image = teaser_image
+    self.promoted = promoted
 
   @classmethod
   def get(cls, post_id):

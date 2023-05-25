@@ -58,6 +58,7 @@ def edit_post(post_id):
       form.title.data = post.title
       form.teaser_image.data = post.teaser_image
       form.body.data = post.body.decode('utf-8')
+      form.promoted.data = post.promoted
       return render_template(
           "edit_post.html.j2",
           form=form,
@@ -79,6 +80,7 @@ def edit_post(post_id):
     else:
       post.teaser_image = request.form.get("original_teaser_image", "")
     post.body = request.form["body"].encode('utf-8')
+    post.promoted = form.promoted.data
     post.save()
     return render_template("index.html.j2", posts=posts)
 
@@ -113,6 +115,10 @@ def create_post():
 
     title = request.form["title"]
     user = current_user.get_id()
+    if form.promoted.data:
+      promoted = bool(form.promoted.data)
+    else:
+      promoted = 0
 
     file = request.files["teaser_image"]
     if file:
@@ -124,7 +130,8 @@ def create_post():
     post = PostModel(title=title,
                      body=clean_body,
                      user_id=user,
-                     teaser_image=filename)
+                     teaser_image=filename,
+                     promoted=promoted)
     post.save()
     flash(f"Post with title: {title} created successfully", "success")
     return redirect(url_for("pages.create_post"))
